@@ -109,7 +109,6 @@ export default function Home() {
       {isModalOpen && (
         <Modal 
           isOpen={isModalOpen}
-          onClose={closeModal}
           title={isEditMode ? 'Edit Project' : 'Create New Project'}
         >
           <ProjectForm
@@ -125,7 +124,6 @@ export default function Home() {
       {isAuditModalOpen && (
         <Modal 
           isOpen={isAuditModalOpen}
-          onClose={() => setIsAuditModalOpen(false)}
           title="Project Change History"
           maxWidth="3xl"
         >

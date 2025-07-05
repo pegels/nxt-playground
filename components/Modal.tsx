@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 
 type ModalProps = {
   isOpen: boolean;
-  onClose: () => void;
   title: string;
   children: ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
@@ -11,7 +10,6 @@ type ModalProps = {
 
 export function Modal({ 
   isOpen, 
-  onClose, 
   title, 
   children,
   maxWidth = 'md'
