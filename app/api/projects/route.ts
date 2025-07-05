@@ -29,7 +29,7 @@ export async function DELETE(req: Request) {
       where: { id: parseInt(id) }
     })
     return new Response(null, { status: 204 })
-  } catch (error) {
+  } catch {
     return new Response('Failed to delete project', { status: 500 })
   }
 }
