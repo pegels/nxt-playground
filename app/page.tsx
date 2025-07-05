@@ -12,6 +12,8 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newProject, setNewProject] = useState({ name: '', description: '' })
   const [isLoading, setIsLoading] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [currentProject, setCurrentProject] = useState<Project | null>(null)
 
   const fetchProjects = async () => {
     setIsLoading(true)
@@ -70,6 +72,37 @@ export default function Home() {
     }
   }
 
+  const openEditModal = (project: Project) => {
+    setCurrentProject(project)
+    setNewProject({ name: project.name, description: project.description || '' })
+    setIsEditMode(true)
+    setIsModalOpen(true)
+  }
+
+  const handleUpdateProject = async () => {
+    if (!currentProject || !newProject.name) return
+
+    try {
+      const response = await fetch(`/api/projects?id=${currentProject.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProject),
+      })
+
+      if (response.ok) {
+        await fetchProjects() // Refresh the projects list
+        setNewProject({ name: '', description: '' })
+        setIsModalOpen(false)
+        setIsEditMode(false)
+        setCurrentProject(null)
+      }
+    } catch (error) {
+      console.error('Failed to update project:', error)
+    }
+  }
+
   return (
     <main className="p-6 max-w-2xl mx-auto">
       <div className="flex justify-between items-center mb-4">
@@ -93,7 +126,12 @@ export default function Home() {
             )}
           </button>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setIsEditMode(false)
+              setCurrentProject(null)
+              setNewProject({ name: '', description: '' })
+              setIsModalOpen(true)
+            }}
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
           >
             New Project
@@ -108,6 +146,12 @@ export default function Home() {
             <span className="text-sm text-gray-600">{p.description}</span>
             <div className="flex justify-end space-x-2 mt-2">
               <button
+                onClick={() => openEditModal(p)}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-sm rounded"
+              >
+                Edit
+              </button>
+              <button
                 onClick={() => handleDeleteProject(p.id)}
                 className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded"
               >
@@ -118,11 +162,13 @@ export default function Home() {
         ))}
       </ul>
 
-      {/* Modal for creating a new project */}
+      {/* Modal for creating or editing a project */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Create New Project</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {isEditMode ? 'Edit Project' : 'Create New Project'}
+            </h2>
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -155,16 +201,18 @@ export default function Home() {
                 onClick={() => {
                   setIsModalOpen(false)
                   setNewProject({ name: '', description: '' })
+                  setIsEditMode(false)
+                  setCurrentProject(null)
                 }}
                 className="px-4 py-2 border rounded-md"
               >
                 Cancel
               </button>
               <button
-                onClick={handleCreateProject}
+                onClick={isEditMode ? handleUpdateProject : handleCreateProject}
                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
               >
-                Create
+                {isEditMode ? 'Update' : 'Create'}
               </button>
             </div>
           </div>
