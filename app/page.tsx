@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Project, NewProject } from '../types'
-import { useProjects, useProjectAudit, useProjectModal } from '../hooks'
-import { ProjectList, Modal, Button, ProjectForm, AuditTable } from '../components'
+import { AuditTable, Button, Modal, ProjectForm, ProjectList } from '../components'
+import { useProjectAudit, useProjectModal, useProjects } from '../hooks'
+import { NewProject } from '../types'
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false)
