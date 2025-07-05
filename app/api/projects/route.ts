@@ -15,3 +15,21 @@ export async function POST(req: Request) {
   const project = await prisma.project.create({ data })
   return Response.json(project)
 }
+
+export async function DELETE(req: Request) {
+  const url = new URL(req.url)
+  const id = url.searchParams.get('id')
+  
+  if (!id) {
+    return new Response('Project ID is required', { status: 400 })
+  }
+  
+  try {
+    await prisma.project.delete({
+      where: { id: parseInt(id) }
+    })
+    return new Response(null, { status: 204 })
+  } catch (error) {
+    return new Response('Failed to delete project', { status: 500 })
+  }
+}

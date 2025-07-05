@@ -52,6 +52,24 @@ export default function Home() {
     }
   }
 
+  const handleDeleteProject = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this project?')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/projects?id=${id}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        await fetchProjects() // Refresh the projects list
+      }
+    } catch (error) {
+      console.error('Failed to delete project:', error)
+    }
+  }
+
   return (
     <main className="p-6 max-w-2xl mx-auto">
       <div className="flex justify-between items-center mb-4">
@@ -88,6 +106,14 @@ export default function Home() {
           <li key={p.id} className="border rounded p-3">
             <strong>{p.name}</strong><br />
             <span className="text-sm text-gray-600">{p.description}</span>
+            <div className="flex justify-end space-x-2 mt-2">
+              <button
+                onClick={() => handleDeleteProject(p.id)}
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded"
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
