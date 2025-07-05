@@ -13,3 +13,12 @@ model Project {
   description String?
   createdAt   DateTime @default(now())
 }
+
+model ProjectAudit {
+  id          Int      @id @default(autoincrement())
+  projectId   Int
+  action      String   // "CREATE", "UPDATE", "DELETE"
+  name        String
+  description String?
+  performedAt DateTime @default(now())
+}
