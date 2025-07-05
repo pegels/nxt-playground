@@ -12,6 +12,7 @@ model Project {
   name        String
   description String?
   createdAt   DateTime @default(now())
+  isDeleted   Boolean  @default(false)
 }
 
 model ProjectAudit {

@@ -6,6 +6,7 @@ type Project = {
   name: string
   description?: string
   createdAt?: Date
+  isDeleted?: boolean
 }
 
 type ProjectAudit = {
@@ -27,11 +28,12 @@ export default function Home() {
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false)
   const [projectAuditData, setProjectAuditData] = useState<ProjectAudit[]>([])
   const [isLoadingAudit, setIsLoadingAudit] = useState(false)
+  const [showDeleted, setShowDeleted] = useState(true) // New state to track whether to show deleted projects
 
   const fetchProjects = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch('/api/projects')
+      const response = await fetch(`/api/projects${showDeleted ? '?includeDeleted=true' : ''}`)
       const data = await response.json()
       setProjects(data)
     } catch (error) {
@@ -43,7 +45,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchProjects()
-  }, [])
+  }, [showDeleted])
 
   const handleCreateProject = async () => {
     if (!newProject.name) return
@@ -82,6 +84,20 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Failed to delete project:', error)
+    }
+  }
+
+  const handleRestoreProject = async (id: number) => {
+    try {
+      const response = await fetch(`/api/projects?id=${id}&restore=true`, {
+        method: 'PUT',
+      })
+
+      if (response.ok) {
+        await fetchProjects() // Refresh the projects list
+      }
+    } catch (error) {
+      console.error('Failed to restore project:', error)
     }
   }
 
@@ -136,6 +152,18 @@ export default function Home() {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Projects</h1>
         <div className="flex items-center space-x-2">
+          <label className="flex items-center mr-4 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showDeleted}
+              onChange={(e) => {
+                setShowDeleted(e.target.checked);
+                fetchProjects();
+              }}
+              className="mr-2"
+            />
+            <span>Show deleted</span>
+          </label>
           <button
             onClick={fetchProjects}
             disabled={isLoading}
@@ -169,9 +197,13 @@ export default function Home() {
       
       <ul className="space-y-2">
         {projects.map(p => (
-          <li key={p.id} className="border rounded p-3">
-            <strong>{p.name}</strong><br />
-            <span className="text-sm text-gray-600">{p.description}</span>
+          <li key={p.id} className={`border rounded p-3 ${p.isDeleted ? 'bg-red-50 border-red-200' : ''}`}>
+            <div className="flex justify-between">
+              <div>
+                <strong>{p.name}</strong>{p.isDeleted && <span className="ml-2 text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Deleted</span>}<br />
+                <span className="text-sm text-gray-600">{p.description}</span>
+              </div>
+            </div>
             <div className="flex justify-end space-x-2 mt-2">
               <button
                 onClick={() => fetchProjectAudit(p.id)}
@@ -182,18 +214,30 @@ export default function Home() {
                 </svg>
                 View Changes
               </button>
-              <button
-                onClick={() => openEditModal(p)}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-sm rounded"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDeleteProject(p.id)}
-                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded"
-              >
-                Delete
-              </button>
+              {!p.isDeleted && (
+                <>
+                  <button
+                    onClick={() => openEditModal(p)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 text-sm rounded"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteProject(p.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 text-sm rounded"
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+              {p.isDeleted && (
+                <button
+                  onClick={() => handleRestoreProject(p.id)}
+                  className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-sm rounded"
+                >
+                  Restore
+                </button>
+              )}
             </div>
           </li>
         ))}
