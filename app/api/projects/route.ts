@@ -11,7 +11,6 @@ export async function GET(req: Request) {
   
   // Use type assertion to handle the TypeScript error
   const projects = await prisma.project.findMany({
-    // @ts-ignore - isDeleted exists in the database but TypeScript doesn't know about it yet
     where: includeDeleted ? {} : {
       isDeleted: false
     },
@@ -82,7 +81,6 @@ export async function PUT(req: Request) {
         // Restore the project
         const restoredProject = await tx.project.update({
           where: { id: projectId },
-          // @ts-ignore - isDeleted exists in the database but TypeScript doesn't know about it yet
           data: { isDeleted: false }
         })
         
@@ -176,7 +174,6 @@ export async function DELETE(req: Request) {
       // Soft delete the project by marking it as deleted
       await tx.project.update({
         where: { id: projectId },
-        // @ts-ignore - isDeleted exists in the database but TypeScript doesn't know about it yet
         data: { isDeleted: true }
       })
       
