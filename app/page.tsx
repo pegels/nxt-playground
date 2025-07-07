@@ -83,14 +83,14 @@ export default function Home() {
           <AppButton
             onClick={fetchProjects}
             disabled={isLoading}
-            variant="success"
+            variant="secondary"
             isLoading={isLoading}
           >
             Refresh Data
           </AppButton>
           <AppButton
             onClick={openCreateModal}
-            variant="primary"
+            variant="default"
           >
             New Project
           </AppButton>

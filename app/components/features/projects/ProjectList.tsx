@@ -44,15 +44,15 @@ export function ProjectList({
             
             {!project.isDeleted ? (
               <>
-                <AppButton variant="primary" size="sm" onClick={() => onEdit(project)}>
+                <AppButton variant="default" size="sm" onClick={() => onEdit(project)}>
                   Edit
                 </AppButton>
-                <AppButton variant="danger" size="sm" onClick={() => onDelete(project.id)}>
+                <AppButton variant="destructive" size="sm" onClick={() => onDelete(project.id)}>
                   Delete
                 </AppButton>
               </>
             ) : (
-              <AppButton variant="success" size="sm" onClick={() => onRestore(project.id)}>
+              <AppButton variant="outline" size="sm" onClick={() => onRestore(project.id)}>
                 Restore
               </AppButton>
             )}
