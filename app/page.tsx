@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { AuditTable, AppButton, Modal, ProjectForm, ProjectList } from './components'
 import { useProjectAudit, useProjectModal, useProjects } from '../hooks'
 import { NewProject } from '../types'
+import { Checkbox } from './components/ui/checkbox'
+import { RefreshCw, Plus } from 'lucide-react'
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -84,15 +86,19 @@ export default function Home() {
         <div className="bg-card rounded-lg shadow-sm border p-5 mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center">
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
+              <div className="flex items-center space-x-2 bg-muted/30 px-3 py-2 rounded-md border border-border/40 hover:border-border transition-colors">
+                <Checkbox 
+                  id="show-deleted"
                   checked={showDeleted}
-                  onChange={(e) => setShowDeleted(e.target.checked)}
-                  className="mr-2 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  onCheckedChange={(checked: boolean | "indeterminate") => setShowDeleted(checked === true)}
                 />
-                <span className="text-sm">Show deleted projects</span>
-              </label>
+                <label
+                  htmlFor="show-deleted"
+                  className="text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Show deleted projects
+                </label>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <AppButton
@@ -102,12 +108,7 @@ export default function Home() {
                 isLoading={isLoading}
                 className="text-sm"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-                  <path d="M3 3v5h5"></path>
-                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
-                  <path d="M16 21h5v-5"></path>
-                </svg>
+                <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </AppButton>
               <AppButton
@@ -115,9 +116,7 @@ export default function Home() {
                 variant="default"
                 className="text-sm"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                  <path d="M12 5v14M5 12h14"></path>
-                </svg>
+                <Plus className="h-4 w-4 mr-2" />
                 New Project
               </AppButton>
             </div>
