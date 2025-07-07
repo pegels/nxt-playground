@@ -1,7 +1,18 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { Project, NewProject } from '../../../../types';
 import { AppButton } from '../../common/AppButton';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../../ui/form';
+import { Input } from '../../ui/input';
+import { Textarea } from '../../ui/textarea';
 
 type ProjectFormProps = {
   initialData?: Project;
@@ -16,65 +27,81 @@ export function ProjectForm({
   onCancel,
   isSubmitting = false 
 }: ProjectFormProps) {
-  const [formData, setFormData] = useState<NewProject>({ name: '', description: '' });
   const isEditMode = !!initialData;
+  
+  const form = useForm<NewProject>({
+    defaultValues: {
+      name: '',
+      description: '',
+    }
+  });
 
   useEffect(() => {
     if (initialData) {
-      setFormData({ 
+      form.reset({ 
         name: initialData.name, 
         description: initialData.description || '' 
       });
     }
-  }, [initialData]);
+  }, [initialData, form.reset, form]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name.trim()) return;
-    onSubmit(formData);
+  const handleSubmit = (data: NewProject) => {
+    if (!data.name.trim()) return;
+    onSubmit(data);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Name
-        </label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full px-3 py-2 border rounded-md"
-          placeholder="Project name"
-          required
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Project name" 
+                  {...field} 
+                  required
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description
-        </label>
-        <textarea
-          value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          className="w-full px-3 py-2 border rounded-md"
-          placeholder="Project description"
-          rows={3}
+        
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="Project description" 
+                  {...field} 
+                  rows={3}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      
-      <div className="flex justify-end space-x-2">
-        <AppButton variant="outline" onClick={onCancel}>
-          Cancel
-        </AppButton>
-        <AppButton 
-          type="submit" 
-          isLoading={isSubmitting}
-          disabled={!formData.name.trim() || isSubmitting}
-        >
-          {isEditMode ? 'Update' : 'Create'}
-        </AppButton>
-      </div>
-    </form>
+        
+        <div className="flex justify-end space-x-2 pt-2">
+          <AppButton variant="outline" onClick={onCancel}>
+            Cancel
+          </AppButton>
+          <AppButton 
+            type="submit" 
+            isLoading={isSubmitting}
+            disabled={!form.watch('name')?.trim() || isSubmitting}
+          >
+            {isEditMode ? 'Update' : 'Create'}
+          </AppButton>
+        </div>
+      </form>
+    </Form>
   );
 }
