@@ -84,8 +84,8 @@ export default function Home() {
         
         {/* Controls section */}
         <div className="bg-card rounded-lg shadow-sm border p-5 mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center space-x-2 bg-muted/30 px-3 py-2 rounded-md border border-border/40 hover:border-border transition-colors">
                 <Checkbox 
                   id="show-deleted"
@@ -99,8 +99,6 @@ export default function Home() {
                   Show deleted projects
                 </label>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
               <AppButton
                 onClick={fetchProjects}
                 disabled={isLoading}
@@ -111,6 +109,8 @@ export default function Home() {
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </AppButton>
+            </div>
+            <div>
               <AppButton
                 onClick={openCreateModal}
                 variant="default"
