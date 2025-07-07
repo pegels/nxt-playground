@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { AuditTable, Button, Modal, ProjectForm, ProjectList } from '../components'
+import { AuditTable, AppButton, Modal, ProjectForm, ProjectList } from './components'
 import { useProjectAudit, useProjectModal, useProjects } from '../hooks'
 import { NewProject } from '../types'
 
@@ -80,20 +80,20 @@ export default function Home() {
             />
             <span>Show deleted</span>
           </label>
-          <Button
+          <AppButton
             onClick={fetchProjects}
             disabled={isLoading}
             variant="success"
             isLoading={isLoading}
           >
             Refresh Data
-          </Button>
-          <Button
+          </AppButton>
+          <AppButton
             onClick={openCreateModal}
             variant="primary"
           >
             New Project
-          </Button>
+          </AppButton>
         </div>
       </div>
       
@@ -132,12 +132,12 @@ export default function Home() {
             isLoading={isLoadingAudit} 
           />
           <div className="flex justify-end space-x-2 mt-4">
-            <Button 
+            <AppButton 
               variant="outline"
               onClick={() => setIsAuditModalOpen(false)}
             >
               Close
-            </Button>
+            </AppButton>
           </div>
         </Modal>
       )}
