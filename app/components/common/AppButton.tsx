@@ -32,7 +32,7 @@ export function AppButton({
       disabled={disabled || isLoading}
       variant={variant}
       size={size}
-      className={className}
+      className={`cursor-pointer ${className}`}
       asChild={asChild}
     >
       {isLoading ? (
