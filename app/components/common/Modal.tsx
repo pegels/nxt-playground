@@ -12,13 +12,15 @@ type ModalProps = {
   title: string;
   children: ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
+  onClose?: () => void;
 };
 
 export function Modal({ 
   isOpen, 
   title, 
   children,
-  maxWidth = 'md'
+  maxWidth = 'md',
+  onClose
 }: ModalProps) {
   // Map custom size values to class names
   const maxWidthClass = {
@@ -32,10 +34,17 @@ export function Modal({
   }[maxWidth];
   
   return (
-    <Dialog open={isOpen} modal>
+    <Dialog 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        if (!open && onClose) {
+          onClose();
+        }
+      }}
+    >
       <DialogContent 
         className={maxWidthClass} 
-        showCloseButton={false}
+        showCloseButton={true}
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

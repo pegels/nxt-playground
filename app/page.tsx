@@ -142,6 +142,7 @@ export default function Home() {
         <Modal 
           isOpen={isModalOpen}
           title={isEditMode ? 'Edit Project' : 'Create New Project'}
+          onClose={closeModal}
         >
           <ProjectForm
             initialData={currentProject || undefined}
@@ -158,6 +159,7 @@ export default function Home() {
           isOpen={isAuditModalOpen}
           title="Project Change History"
           maxWidth="3xl"
+          onClose={() => setIsAuditModalOpen(false)}
         >
           <AuditTable 
             auditData={auditData} 
