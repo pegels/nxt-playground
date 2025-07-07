@@ -1,8 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { AuditTable, Button, Modal, ProjectForm, ProjectList } from '../components'
+import { AuditTable, AppButton, Modal, ProjectForm, ProjectList } from './components'
 import { useProjectAudit, useProjectModal, useProjects } from '../hooks'
 import { NewProject } from '../types'
+import { Checkbox } from './components/ui/checkbox'
+import { RefreshCw, Plus } from 'lucide-react'
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -67,49 +69,86 @@ export default function Home() {
   }
 
   return (
-    <main className="p-6 max-w-2xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Projects</h1>
-        <div className="flex items-center space-x-2">
-          <label className="flex items-center mr-4 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showDeleted}
-              onChange={(e) => setShowDeleted(e.target.checked)}
-              className="mr-2"
-            />
-            <span>Show deleted</span>
-          </label>
-          <Button
-            onClick={fetchProjects}
-            disabled={isLoading}
-            variant="success"
-            isLoading={isLoading}
-          >
-            Refresh Data
-          </Button>
-          <Button
-            onClick={openCreateModal}
-            variant="primary"
-          >
-            New Project
-          </Button>
+    <main className="min-h-screen bg-gradient-to-b from-background to-background/80">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        {/* Header section */}
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl font-bold tracking-tight mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+            Project Manager
+          </h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Manage your projects efficiently with our simple and intuitive interface.
+            Create, edit, and track changes to your projects all in one place.
+          </p>
         </div>
-      </div>
-      
-      <ProjectList
-        projects={projects}
-        onViewAudit={handleViewAudit}
-        onEdit={openEditModal}
-        onDelete={deleteProject}
-        onRestore={restoreProject}
-      />
+        
+        {/* Controls section */}
+        <div className="bg-card rounded-lg shadow-sm border p-5 mb-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center">
+              <div className="flex items-center gap-3">
+                <AppButton
+                  onClick={fetchProjects}
+                  disabled={isLoading}
+                  variant="outline"
+                  isLoading={isLoading}
+                  className="text-sm flex items-center"
+                >
+                  <div className="flex items-center mr-2 pr-2 border-r border-border/50">
+                    <RefreshCw className="h-4 w-4" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>Refresh</span>
+                    <div className="flex items-center gap-2 border-l border-border/30 pl-2 ml-1">
+                      <Checkbox 
+                        id="show-deleted"
+                        checked={showDeleted}
+                        onCheckedChange={(checked: boolean | "indeterminate") => setShowDeleted(checked === true)}
+                        className="h-3.5 w-3.5"
+                      />
+                      <label
+                        htmlFor="show-deleted"
+                        className="text-xs font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Include deleted
+                      </label>
+                    </div>
+                  </div>
+                </AppButton>
+              </div>
+            </div>
+            <div>
+              <AppButton
+                onClick={openCreateModal}
+                variant="default"
+                className="text-sm"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                New Project
+              </AppButton>
+            </div>
+          </div>
+        </div>
+
+        {/* Project list section */}
+        <div className="bg-card rounded-lg shadow-sm border p-5">
+          <h2 className="text-xl font-medium mb-4">Projects</h2>
+          
+          <ProjectList
+            projects={projects}
+            onViewAudit={handleViewAudit}
+            onEdit={openEditModal}
+            onDelete={deleteProject}
+            onRestore={restoreProject}
+          />
+        </div>
 
       {/* Project form modal */}
       {isModalOpen && (
         <Modal 
           isOpen={isModalOpen}
           title={isEditMode ? 'Edit Project' : 'Create New Project'}
+          onClose={closeModal}
         >
           <ProjectForm
             initialData={currentProject || undefined}
@@ -126,21 +165,23 @@ export default function Home() {
           isOpen={isAuditModalOpen}
           title="Project Change History"
           maxWidth="3xl"
+          onClose={() => setIsAuditModalOpen(false)}
         >
           <AuditTable 
             auditData={auditData} 
             isLoading={isLoadingAudit} 
           />
           <div className="flex justify-end space-x-2 mt-4">
-            <Button 
+            <AppButton 
               variant="outline"
               onClick={() => setIsAuditModalOpen(false)}
             >
               Close
-            </Button>
+            </AppButton>
           </div>
         </Modal>
       )}
-    </main>
+    </div>
+  </main>
   )
 }
