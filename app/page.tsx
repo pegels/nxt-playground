@@ -85,30 +85,37 @@ export default function Home() {
         {/* Controls section */}
         <div className="bg-card rounded-lg shadow-sm border p-5 mb-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center space-x-2 bg-muted/30 px-3 py-2 rounded-md border border-border/40 hover:border-border transition-colors">
-                <Checkbox 
-                  id="show-deleted"
-                  checked={showDeleted}
-                  onCheckedChange={(checked: boolean | "indeterminate") => setShowDeleted(checked === true)}
-                />
-                <label
-                  htmlFor="show-deleted"
-                  className="text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            <div className="flex items-center">
+              <div className="flex items-center gap-3">
+                <AppButton
+                  onClick={fetchProjects}
+                  disabled={isLoading}
+                  variant="outline"
+                  isLoading={isLoading}
+                  className="text-sm flex items-center"
                 >
-                  Show deleted projects
-                </label>
+                  <div className="flex items-center mr-2 pr-2 border-r border-border/50">
+                    <RefreshCw className="h-4 w-4" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>Refresh</span>
+                    <div className="flex items-center gap-2 border-l border-border/30 pl-2 ml-1">
+                      <Checkbox 
+                        id="show-deleted"
+                        checked={showDeleted}
+                        onCheckedChange={(checked: boolean | "indeterminate") => setShowDeleted(checked === true)}
+                        className="h-3.5 w-3.5"
+                      />
+                      <label
+                        htmlFor="show-deleted"
+                        className="text-xs font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        Include deleted
+                      </label>
+                    </div>
+                  </div>
+                </AppButton>
               </div>
-              <AppButton
-                onClick={fetchProjects}
-                disabled={isLoading}
-                variant="outline"
-                isLoading={isLoading}
-                className="text-sm"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
-              </AppButton>
             </div>
             <div>
               <AppButton
