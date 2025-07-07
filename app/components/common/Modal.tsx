@@ -1,5 +1,5 @@
 'use client'
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 type ModalProps = {
   isOpen: boolean;
@@ -14,6 +14,19 @@ export function Modal({
   children,
   maxWidth = 'md'
 }: ModalProps) {
+  useEffect(() => {
+    // Lock body scroll when modal is open
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+    
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [isOpen]);
+  
   if (!isOpen) return null;
   
   const maxWidthClass = {
@@ -27,10 +40,19 @@ export function Modal({
   }[maxWidth];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className={`bg-white p-6 rounded-lg w-full ${maxWidthClass}`}>
-        <h2 className="text-xl font-bold mb-4">{title}</h2>
-        {children}
+    <div 
+      className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div 
+        className={`bg-card border shadow-lg rounded-lg w-full ${maxWidthClass} animate-in fade-in-0 zoom-in-95 duration-200`}
+      >
+        <div className="p-5 border-b">
+          <h2 className="text-lg font-medium leading-6">{title}</h2>
+        </div>
+        <div className="p-5">
+          {children}
+        </div>
       </div>
     </div>
   );

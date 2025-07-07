@@ -67,43 +67,75 @@ export default function Home() {
   }
 
   return (
-    <main className="p-6 max-w-2xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Projects</h1>
-        <div className="flex items-center space-x-2">
-          <label className="flex items-center mr-4 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showDeleted}
-              onChange={(e) => setShowDeleted(e.target.checked)}
-              className="mr-2"
-            />
-            <span>Show deleted</span>
-          </label>
-          <AppButton
-            onClick={fetchProjects}
-            disabled={isLoading}
-            variant="secondary"
-            isLoading={isLoading}
-          >
-            Refresh Data
-          </AppButton>
-          <AppButton
-            onClick={openCreateModal}
-            variant="default"
-          >
-            New Project
-          </AppButton>
+    <main className="min-h-screen bg-gradient-to-b from-background to-background/80">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        {/* Header section */}
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl font-bold tracking-tight mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
+            Project Manager
+          </h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Manage your projects efficiently with our simple and intuitive interface.
+            Create, edit, and track changes to your projects all in one place.
+          </p>
         </div>
-      </div>
-      
-      <ProjectList
-        projects={projects}
-        onViewAudit={handleViewAudit}
-        onEdit={openEditModal}
-        onDelete={deleteProject}
-        onRestore={restoreProject}
-      />
+        
+        {/* Controls section */}
+        <div className="bg-card rounded-lg shadow-sm border p-5 mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showDeleted}
+                  onChange={(e) => setShowDeleted(e.target.checked)}
+                  className="mr-2 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <span className="text-sm">Show deleted projects</span>
+              </label>
+            </div>
+            <div className="flex items-center gap-3">
+              <AppButton
+                onClick={fetchProjects}
+                disabled={isLoading}
+                variant="outline"
+                isLoading={isLoading}
+                className="text-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <path d="M3 3v5h5"></path>
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+                  <path d="M16 21h5v-5"></path>
+                </svg>
+                Refresh
+              </AppButton>
+              <AppButton
+                onClick={openCreateModal}
+                variant="default"
+                className="text-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                  <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                New Project
+              </AppButton>
+            </div>
+          </div>
+        </div>
+
+        {/* Project list section */}
+        <div className="bg-card rounded-lg shadow-sm border p-5">
+          <h2 className="text-xl font-medium mb-4">Projects</h2>
+          
+          <ProjectList
+            projects={projects}
+            onViewAudit={handleViewAudit}
+            onEdit={openEditModal}
+            onDelete={deleteProject}
+            onRestore={restoreProject}
+          />
+        </div>
 
       {/* Project form modal */}
       {isModalOpen && (
@@ -141,6 +173,7 @@ export default function Home() {
           </div>
         </Modal>
       )}
-    </main>
+    </div>
+  </main>
   )
 }
